@@ -1,0 +1,28 @@
+.wave {
+    position: relative;
+    padding: 15px 70px;
+    font-size: 18px;
+    color: white;
+
+    border: none;
+    overflow: hidden;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .wave::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-45deg);
+    transition: left 0.5s;
+  }
+  
+  .wave:hover::before {
+    left: 100%;
+  }
+  
