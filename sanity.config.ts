@@ -1,4 +1,5 @@
 'use client'
+
 /**
  * This config is used to set up Sanity Studio that's mounted on the `/pages/studio/[[...index]].tsx` route
  */
@@ -11,11 +12,14 @@ import {
   projectId,
 } from 'lib/sanity.api'
 import { locate } from 'plugins/locate'
-import { previewDocumentNode } from 'plugins/previewPane'
+import { previewDocumentNode } from 'plugins/previewPane'  // Assuming this is where previewDocumentNode is defined
 import { settingsPlugin, settingsStructure } from 'plugins/settings'
 import { defineConfig } from 'sanity'
-import { presentationTool } from 'sanity/presentation'
-import { structureTool } from 'sanity/structure'
+
+// Correct import for structure
+import { structure } from 'sanity/structure'  // Use 'structure' instead of 'structureTool'
+
+import { presentationTool } from '@sanity/presentation'  // Corrected import path for presentationTool
 import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
 import authorType from 'schemas/author'
 import postType from 'schemas/post'
@@ -34,13 +38,14 @@ export default defineConfig({
     types: [authorType, postType, settingsType],
   },
   plugins: [
-    structureTool({
-      structure: settingsStructure(settingsType),
-      // `defaultDocumentNode` is responsible for adding a “Preview” tab to the document pane
-      defaultDocumentNode: previewDocumentNode(),
+    structure({
+      structure: settingsStructure(settingsType),  // Pass the structure here
+      // `defaultDocumentNode` is responsible for adding a “Preview” tab to the document pane
+      defaultDocumentNode: (S, { schemaType }) => previewDocumentNode(S, { schemaType }),  // Pass S and schemaType here
     }),
+    // Ensure `presentationTool` is correctly configured
     presentationTool({
-      locate,
+      locate,  // assuming you have `locate` logic to handle locale
       previewUrl: {
         previewMode: {
           enable: DRAFT_MODE_ROUTE,

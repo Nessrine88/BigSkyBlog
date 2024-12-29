@@ -1,34 +1,26 @@
-import Iframe from "sanity-plugin-iframe-pane";
-import type { DefaultDocumentNodeResolver } from "sanity/desk";
+import { Iframe } from "sanity-plugin-iframe-pane";
+import { StructureBuilder } from "sanity/desk"; // Import from deskTool
 
-export const getDefaultDocumentNode: DefaultDocumentNodeResolver = (
-	S,
-	{ schemaType }
-) => {
-	// Conditionally return a different configuration based on the schema type
-	if (schemaType === "post") {
-		return S.document().views([
-			S.view.form(),
+export const getDefaultDocumentNode = ({ schemaType, S }: { schemaType: string, S: StructureBuilder }) => {
+  // Conditionally return a different configuration based on the schema type
+  if (schemaType === "post") {
+    return S.document().views([
+      S.view.form(), // Default form view
 
-			S.view
-				.component(Iframe)
-				.options({
-					// Required: Accepts an async function
-					// OR a string
-					url: `${
-						process.env.NEXT_PUBLIC_VERCEL_URL || "http://localhost:3000"
-					}/api/preview`,
-					// Optional: Set the default size
-					defaultSize: `desktop`, // default `desktop`
-					// Optional: Add a reload button, or reload on new document revisions
-					reload: {
-						button: true, // default `undefined`
-					},
-					// Optional: Pass attributes to the underlying `iframe` element:
-					// See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
-					attributes: {},
-				})
-				.title("Preview"),
-		]);
-	}
+      // Add the iframe view for preview
+      S.view
+        .component(Iframe)
+        .options({
+          url: `${
+            process.env.NEXT_PUBLIC_VERCEL_URL || "http://localhost:3000"
+          }/api/preview`, // URL for preview
+          defaultSize: "desktop", // Default size for the iframe
+          reload: {
+            button: true, // Show a reload button
+          },
+          attributes: {}, // Additional iframe attributes (if any)
+        })
+        .title("Preview"), // Title of the preview view
+    ]);
+  }
 };

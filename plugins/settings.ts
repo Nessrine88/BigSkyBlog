@@ -1,16 +1,13 @@
-/**
- * This plugin contains all the logic for setting up the `Settings` singleton
- */
-
 import { definePlugin, type DocumentDefinition } from 'sanity'
-import type { StructureResolver } from 'sanity/structure'
+import { StructureBuilder } from 'sanity/desk'
+
+// This plugin contains all the logic for setting up the `Settings` singleton
 
 export const settingsPlugin = definePlugin<{ type: string }>(({ type }) => {
   return {
     name: 'settings',
     document: {
       // Hide 'Settings' from new document options
-      // https://user-images.githubusercontent.com/81981/195728798-e0c6cf7e-d442-4e58-af3a-8cd99d7fcc28.png
       newDocumentOptions: (prev, { creationContext }) => {
         if (creationContext.type === 'global') {
           return prev.filter((templateItem) => templateItem.templateId !== type)
@@ -30,27 +27,24 @@ export const settingsPlugin = definePlugin<{ type: string }>(({ type }) => {
   }
 })
 
-// The StructureResolver is how we're changing the DeskTool structure to linking to a single "Settings" document, instead of rendering "settings" in a list
-// like how "Post" and "Author" is handled.
-export const settingsStructure = (
-  typeDef: DocumentDefinition,
-): StructureResolver => {
-  return (S) => {
+// The StructureResolver is how we're changing the DeskTool structure to link to a single "Settings" document
+// You don't need to import StructureResolver directly anymore in Sanity v3.
+export const settingsStructure = (typeDef: DocumentDefinition) => {
+  return (S: StructureBuilder) => {
     // The `Settings` root list item
-    const settingsListItem = // A singleton not using `documentListItem`, eg no built-in preview
-      S.listItem()
-        .title(typeDef.title)
-        .icon(typeDef.icon)
-        .child(
-          S.editor()
-            .id(typeDef.name)
-            .schemaType(typeDef.name)
-            .documentId(typeDef.name),
-        )
+    const settingsListItem = S.listItem()
+      .title(typeDef.title)
+      .icon(typeDef.icon)
+      .child(
+        S.editor()
+          .id(typeDef.name)
+          .schemaType(typeDef.name)
+          .documentId(typeDef.name)
+      )
 
     // The default root list items (except custom ones)
     const defaultListItems = S.documentTypeListItems().filter(
-      (listItem) => listItem.getId() !== typeDef.name,
+      (listItem) => listItem.getId() !== typeDef.name
     )
 
     return S.list()
