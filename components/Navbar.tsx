@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { FaSun, FaMoon, FaBars, FaTimes } from 'react-icons/fa';
 import { useState } from 'react';
-import '../../bigskyeats-blog/globals.css'
 
 interface NavbarProps {
   toggleTheme: () => void;
