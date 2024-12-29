@@ -27,8 +27,10 @@ export default function Page(props: PageProps) {
 
 export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
   const { draftMode = false } = ctx
+  // Get the Sanity client based on whether it's draft mode
   const client = getClient(draftMode ? { token: readToken } : undefined)
 
+  // Fetch settings and posts
   const [settings, posts = []] = await Promise.all([
     getSettings(client),
     getAllPosts(client),
@@ -41,6 +43,6 @@ export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
       draftMode,
       token: draftMode ? readToken : '',
     },
-    revalidate: 10, 
+    revalidate: 10,  // Rebuild the page every 10 seconds
   }
 }

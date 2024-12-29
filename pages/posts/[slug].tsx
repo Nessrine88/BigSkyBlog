@@ -37,9 +37,10 @@ export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
   const { draftMode = false, params = {} } = ctx
   const client = getClient(draftMode ? { token: readToken } : undefined)
 
+  const slug = params.slug || ''
   const [settings, { post, morePosts }] = await Promise.all([
     getSettings(client),
-    getPostAndMoreStories(client, params.slug),
+    getPostAndMoreStories(client, slug),
   ])
 
   if (!post) {
@@ -56,7 +57,7 @@ export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
       draftMode,
       token: draftMode ? readToken : '',
     },
-    revalidate: 10, 
+    revalidate: 10, // Rebuild the page every 10 seconds
   }
 }
 
@@ -65,6 +66,6 @@ export const getStaticPaths = async () => {
 
   return {
     paths: slugs?.map(({ slug }) => `/posts/${slug}`) || [],
-    fallback: 'blocking',
+    fallback: 'blocking',  // This ensures the page is statically generated when requested
   }
 }
