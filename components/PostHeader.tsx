@@ -3,6 +3,7 @@ import Date from 'components/PostDate'
 import PostTitle from 'components/PostTitle'
 import type { Post } from 'lib/sanity.queries'
 import { FaArrowLeftLong } from "react-icons/fa6";
+import "../../bigskyeats-blog/globals.css";
 import Link from 'next/link';
 
 export default function PostHeader(
